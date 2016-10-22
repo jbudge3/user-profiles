@@ -1,13 +1,34 @@
 angular.module('userProfiles')
-.service('friendService', function( $http ) {
-  
-    
-    this.login: function( user ) {
-      /* FIX ME */
-    },
+.service('friendService', function( $http, $q ) {
 
-    this.getFriends: function() {
-    	/* FIX ME */
-    }
-  
+
+    this.login = function( user ) {
+      return $http.post('http://localhost:4545/api/login', {
+        name: user.name,
+        password: user.password
+      })
+    };
+
+    this.getFriends = function() {
+    	var deferred = $q.defer();
+
+      $http.get('http://localhost:4545/api/profiles').then(function(response) {
+        var friendArray = response.data;
+        deferred.resolve(friendArray);
+      });
+
+      return deferred.promise;
+    };
+
+    this.getUserName = function() {
+      var deferred = $q.defer();
+
+      $http.get('http://localhost:4545/api/currentUserName').then(function(response) {
+        var currentUserName = response.data;
+        deferred.resolve(currentUserName);
+      });
+
+      return deferred.promise;
+    };
+
 });
